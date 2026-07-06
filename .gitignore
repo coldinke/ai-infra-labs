@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+
+# Build
+build/
+dist/
+*.egg-info/
+*.so
+*.o
+*.out
+
+# CUDA / Nsight
+*.qdrep
+*.nsys-rep
+*.sqlite
+*.ncu-rep
+
+# Logs
+*.log
+logs/
+
+# Data / artifacts
+data/
+artifacts/
+checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
