@@ -18,6 +18,7 @@ dist/
 *.nsys-rep
 *.sqlite
 *.ncu-rep
+labs/*/profiles/
 
 # Logs
 *.log

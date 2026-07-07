@@ -119,6 +119,48 @@ print_cmd() {
   echo
 }
 
+find_tool() {
+  local env_name="$1"
+  local tool_name="$2"
+  local env_value="${!env_name:-}"
+  local found=""
+
+  if [[ -n "$env_value" ]]; then
+    if [[ -x "$env_value" ]]; then
+      printf '%s\n' "$env_value"
+      return 0
+    fi
+
+    echo "$env_name is set but not executable: $env_value" >&2
+    return 1
+  fi
+
+  if command -v "$tool_name" >/dev/null 2>&1; then
+    command -v "$tool_name"
+    return 0
+  fi
+
+  found="$(
+    {
+      find /opt/nvidia /usr/local/cuda /usr/local/cuda-* \
+        -type f \
+        -name "$tool_name" \
+        2>/dev/null || true
+    } | head -n 1
+  )"
+
+  if [[ -n "$found" && -x "$found" ]]; then
+    printf '%s\n' "$found"
+    return 0
+  fi
+
+  return 1
+}
+
+NVCC_BIN="$(find_tool NVCC_BIN nvcc || true)"
+NSYS_BIN="$(find_tool NSYS_BIN nsys || true)"
+NCU_BIN="$(find_tool NCU_BIN ncu || true)"
+
 collect_env() {
   {
     echo "# Environment"
@@ -167,7 +209,34 @@ collect_env() {
 
     echo "## NVCC"
     echo '```text'
-    nvcc --version 2>/dev/null || echo "nvcc not found"
+    if [[ -n "$NVCC_BIN" ]]; then
+      echo "path: $NVCC_BIN"
+      "$NVCC_BIN" --version 2>/dev/null || echo "failed to run nvcc"
+    else
+      echo "nvcc not found"
+    fi
+    echo '```'
+    echo
+
+    echo "## Nsight Systems"
+    echo '```text'
+    if [[ -n "$NSYS_BIN" ]]; then
+      echo "path: $NSYS_BIN"
+      "$NSYS_BIN" --version 2>/dev/null || echo "failed to run nsys"
+    else
+      echo "nsys not found"
+    fi
+    echo '```'
+    echo
+
+    echo "## Nsight Compute"
+    echo '```text'
+    if [[ -n "$NCU_BIN" ]]; then
+      echo "path: $NCU_BIN"
+      "$NCU_BIN" --version 2>/dev/null || echo "failed to run ncu"
+    else
+      echo "ncu not found"
+    fi
     echo '```'
     echo
 
@@ -214,10 +283,20 @@ collect_env
 echo
 echo "== Benchmark Command =="
 if [[ "$USE_NSYS" -eq 1 ]]; then
-  NSYS_OUTPUT="$OUT_DIR/profile"
-  print_cmd nsys profile --trace=cuda,nvtx,osrt --output="$NSYS_OUTPUT" --force-overwrite=true python3 "$BENCH_FILE" "${BENCH_ARGS[@]}"
+  if [[ -z "$NSYS_BIN" ]]; then
+    cat >&2 <<'MSG'
+nsys not found.
 
-  nsys profile \
+Set NSYS_BIN to the full executable path, or install Nsight Systems so nsys is
+on PATH. This script also searches /opt/nvidia and /usr/local/cuda*.
+MSG
+    exit 1
+  fi
+
+  NSYS_OUTPUT="$OUT_DIR/profile"
+  print_cmd "$NSYS_BIN" profile --trace=cuda,nvtx,osrt --output="$NSYS_OUTPUT" --force-overwrite=true python3 "$BENCH_FILE" "${BENCH_ARGS[@]}"
+
+  "$NSYS_BIN" profile \
     --trace=cuda,nvtx,osrt \
     --output="$NSYS_OUTPUT" \
     --force-overwrite=true \
@@ -229,14 +308,14 @@ if [[ "$USE_NSYS" -eq 1 ]]; then
 
   # Prefer focused reports. If this nsys version does not support --report,
   # fall back to default stats.
-  if nsys stats \
+  if "$NSYS_BIN" stats \
       --report cuda_api_sum,cuda_gpu_kern_sum,nvtx_sum,osrt_sum \
       "${NSYS_OUTPUT}.nsys-rep" \
       > "$NSYS_STATS_FILE" 2>&1; then
     echo "saved focused nsys stats: $NSYS_STATS_FILE"
   else
     echo "focused nsys stats failed, fallback to default stats"
-    nsys stats "${NSYS_OUTPUT}.nsys-rep" > "$NSYS_STATS_FILE" 2>&1
+    "$NSYS_BIN" stats "${NSYS_OUTPUT}.nsys-rep" > "$NSYS_STATS_FILE" 2>&1
     echo "saved default nsys stats: $NSYS_STATS_FILE"
   fi
 else
@@ -266,7 +345,7 @@ $(if [[ "$USE_NSYS" -eq 1 ]]; then echo "- Nsight Systems stats: \`nsys_stats.tx
 ## Command
 
 \`\`\`bash
-$(if [[ "$USE_NSYS" -eq 1 ]]; then print_cmd nsys profile --trace=cuda,nvtx,osrt --output=profile --force-overwrite=true python3 "$BENCH_FILE" "${BENCH_ARGS[@]}"; else print_cmd python3 "$BENCH_FILE" "${BENCH_ARGS[@]}"; fi)
+$(if [[ "$USE_NSYS" -eq 1 ]]; then print_cmd "$NSYS_BIN" profile --trace=cuda,nvtx,osrt --output=profile --force-overwrite=true python3 "$BENCH_FILE" "${BENCH_ARGS[@]}"; else print_cmd python3 "$BENCH_FILE" "${BENCH_ARGS[@]}"; fi)
 \`\`\`
 
 ## Notes
