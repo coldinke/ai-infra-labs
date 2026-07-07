@@ -11,6 +11,12 @@ sys.path.insert(0, str(LAB_DIR))
 import _rmsnorm_cuda  # noqa: E402
 
 
+def check_kernel_config() -> None:
+    block_size = int(_rmsnorm_cuda.block_size())
+    assert block_size > 0
+    print(f"PASS block_size={block_size}")
+
+
 def rmsnorm_torch(x: torch.Tensor, weight: torch.Tensor, eps: float = 1e-6) -> torch.Tensor:
     variance = x.pow(2).mean(dim=-1, keepdim=True)
     x_norm = x * torch.rsqrt(variance + eps)
@@ -52,6 +58,8 @@ def main() -> None:
         (32, 8192),
         (128, 8192),
     ]
+
+    check_kernel_config()
 
     for batch_size, hidden_size in shapes:
         check_shape(batch_size, hidden_size)

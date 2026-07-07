@@ -1,6 +1,7 @@
 #include <torch/extension.h>
 
 torch::Tensor rmsnorm_cuda(torch::Tensor x, torch::Tensor weight, double eps);
+int rmsnorm_cuda_block_size();
 
 #define CHECK_CUDA(x) TORCH_CHECK(x.is_cuda(), #x " must be a CUDA tensor")
 #define CHECK_CONTIGUOUS(x)                                                    \
@@ -27,4 +28,6 @@ torch::Tensor rmsnorm_forward(torch::Tensor x, torch::Tensor weight,
 
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
   m.def("forward", &rmsnorm_forward, "Naive fused RMSNorm forward (CUDA, fp32)");
+  m.def("block_size", &rmsnorm_cuda_block_size,
+        "Thread block size used by the RMSNorm CUDA kernel");
 }

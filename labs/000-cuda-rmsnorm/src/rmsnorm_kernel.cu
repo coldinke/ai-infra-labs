@@ -80,3 +80,7 @@ torch::Tensor rmsnorm_cuda(torch::Tensor x, torch::Tensor weight, double eps) {
 
     return y;
 }
+
+int rmsnorm_cuda_block_size() {
+    return kBlockSize;
+}

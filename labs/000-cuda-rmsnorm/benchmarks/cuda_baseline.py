@@ -31,6 +31,10 @@ def rmsnorm_cuda(x: torch.Tensor, weight: torch.Tensor, eps: float = 1e-6) -> to
     return _rmsnorm_cuda.forward(x.contiguous(), weight.contiguous(), eps)
 
 
+def rmsnorm_cuda_block_size() -> int:
+    return int(_rmsnorm_cuda.block_size())
+
+
 def rmsnorm_torch(x: torch.Tensor, weight: torch.Tensor, eps: float = 1e-6) -> torch.Tensor:
     variance = x.pow(2).mean(dim=-1, keepdim=True)
     x_norm = x * torch.rsqrt(variance + eps)
@@ -110,6 +114,12 @@ def print_environment() -> None:
     print()
 
 
+def print_kernel_config() -> None:
+    print("== CUDA Kernel Config ==")
+    print(f"block_size: {rmsnorm_cuda_block_size()}")
+    print()
+
+
 def run_benchmark(args: argparse.Namespace) -> None:
     torch.manual_seed(args.seed)
 
@@ -117,6 +127,7 @@ def run_benchmark(args: argparse.Namespace) -> None:
     dtype = parse_dtype(args.dtype)
 
     print_environment()
+    print_kernel_config()
 
     shapes = [
         (1, 1024),
@@ -134,6 +145,7 @@ def run_benchmark(args: argparse.Namespace) -> None:
     print(
         f"{'batch':>8} "
         f"{'hidden':>8} "
+        f"{'block':>8} "
         f"{'elements':>12} "
         f"{'dtype':>14} "
         f"{'wall_min_ms':>14} "
@@ -166,10 +178,12 @@ def run_benchmark(args: argparse.Namespace) -> None:
         num_elements = batch_size * hidden_size
         approx_bytes = estimate_rmsnorm_bytes(batch_size, hidden_size, dtype)
         approx_gbps = format_gbps(approx_bytes, result["cuda_min_ms"])
+        block_size = rmsnorm_cuda_block_size()
 
         print(
             f"{batch_size:8d} "
             f"{hidden_size:8d} "
+            f"{block_size:8d} "
             f"{num_elements:12d} "
             f"{str(dtype):>14} "
             f"{result['wall_min_ms']:14.6f} "
@@ -188,6 +202,7 @@ def run_profile(args: argparse.Namespace) -> None:
     dtype = parse_dtype(args.dtype)
 
     print_environment()
+    print_kernel_config()
 
     x = torch.randn(args.batch_size, args.hidden_size, device=device, dtype=dtype)
     weight = torch.randn(args.hidden_size, device=device, dtype=dtype)
@@ -195,6 +210,7 @@ def run_profile(args: argparse.Namespace) -> None:
     print("== Profile Mode ==")
     print(f"batch_size: {args.batch_size}")
     print(f"hidden_size: {args.hidden_size}")
+    print(f"block_size: {rmsnorm_cuda_block_size()}")
     print(f"dtype: {dtype}")
     print(f"warmup: {args.warmup}")
     print(f"iters: {args.iters}")
