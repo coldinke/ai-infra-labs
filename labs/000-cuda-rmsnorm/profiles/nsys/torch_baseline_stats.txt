@@ -1,0 +1,123 @@
+Generating SQLite file labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite from labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.nsys-rep
+Processing [labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/nvtx_sum.py]... 
+SKIPPED: labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite does not contain NV Tools Extension (NVTX) data.
+
+Processing [labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/osrt_sum.py]... 
+
+ ** OS Runtime Summary (osrt_sum):
+
+ Time (%)  Total Time (ns)  Num Calls   Avg (ns)     Med (ns)    Min (ns)   Max (ns)   StdDev (ns)           Name         
+ --------  ---------------  ---------  -----------  -----------  ---------  ---------  -----------  ----------------------
+     50.3       8323492534         92   90472744.9  100122114.5       3658  312028714   38691504.6  poll                  
+     48.3       8001171061         16  500073191.3  500070659.0  500062414  500091870       7778.8  pthread_cond_timedwait
+      0.8        139851029        662     211255.3      12214.0       1069   36778596    1509340.8  ioctl                 
+      0.2         37495658        109     343996.9       1611.0       1314   18719473    2504862.0  fopen                 
+      0.1         11715060       1130      10367.3       3008.0       1013     320448      23640.8  read                  
+      0.1          9320045         41     227318.2      34657.0      12887     673764     285913.1  pthread_rwlock_wrlock 
+      0.0          7879374        129      61080.4      61997.0      37095      68096       3600.7  sleep                 
+      0.0          5769672       1179       4893.7       4662.0       1297      28333       1633.6  open64                
+      0.0          5059179          1    5059179.0    5059179.0    5059179    5059179          0.0  nanosleep             
+      0.0          3499134        200      17495.7      13494.0       1187      88513      15180.1  fgets                 
+      0.0          2547287        151      16869.5       3515.0       1001    1597639     130355.9  mmap64                
+      0.0          1990689        645       3086.3       2726.0       1644      13519       1658.2  munmap                
+      0.0           825327         30      27510.9      27217.0       4064      52437       9504.0  pthread_rwlock_rdlock 
+      0.0           617146        118       5230.1       3502.0       1034      36900       5132.3  pthread_cond_signal   
+      0.0           519310         10      51931.0      49047.5      30151      82428      14724.0  sem_timedwait         
+      0.0           485821         12      40485.1      36574.5      22624      67746      14721.7  pthread_mutex_lock    
+      0.0           224101          3      74700.3      82156.0      40757     101188      30897.7  pthread_create        
+      0.0           216287          1     216287.0     216287.0     216287     216287          0.0  pthread_cond_wait     
+      0.0           155391         16       9711.9       5797.0       1614      69197      16259.8  mmap                  
+      0.0            45304         23       1969.7       1305.0       1009       5323       1301.1  fclose                
+      0.0            41121          9       4569.0       5180.0       1385       9045       2700.5  open                  
+      0.0            38734         12       3227.8       2666.5       1811       8334       1788.2  write                 
+      0.0            38029          7       5432.7       2443.0       1680      16970       5703.5  fopen64               
+      0.0            33741          3      11247.0       9884.0       4840      19017       7186.1  pthread_cond_broadcast
+      0.0            14284          2       7142.0       7142.0       5922       8362       1725.3  socket                
+      0.0            13256          3       4418.7       5237.0       2534       5485       1636.9  pipe2                 
+      0.0             9640          2       4820.0       4820.0       4593       5047        321.0  fread                 
+      0.0             7849          1       7849.0       7849.0       7849       7849          0.0  connect               
+      0.0             5885          2       2942.5       2942.5       2022       3863       1301.8  fwrite                
+      0.0             3497          2       1748.5       1748.5       1705       1792         61.5  sigaction             
+      0.0             2887          1       2887.0       2887.0       2887       2887          0.0  pthread_mutex_trylock 
+      0.0             2863          1       2863.0       2863.0       2863       2863          0.0  bind                  
+      0.0             1208          1       1208.0       1208.0       1208       1208          0.0  listen                
+
+Processing [labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/cuda_api_sum.py]... 
+
+ ** CUDA API Summary (cuda_api_sum):
+
+ Time (%)  Total Time (ns)  Num Calls  Avg (ns)   Med (ns)   Min (ns)  Max (ns)  StdDev (ns)                Name               
+ --------  ---------------  ---------  ---------  ---------  --------  --------  -----------  ---------------------------------
+     84.6       2667367390     594018     4490.4     3905.0      3430  45718983      73461.2  cudaLaunchKernel                 
+     15.1        476422807        360  1323396.7     2849.5      1352  20903774    4799069.7  cudaDeviceSynchronize            
+      0.1          1838976          8   229872.0   269568.0     81422    345289     103672.2  cudaMalloc                       
+      0.1          1820791        180    10115.5     1224.5       410   1126200      89680.2  cudaEventDestroy                 
+      0.1          1624790          1  1624790.0  1624790.0   1624790   1624790          0.0  cudaGetDeviceProperties_v2_v12000
+      0.0          1374097        180     7633.9     6687.0      5326    101616       7535.6  cudaEventRecordWithFlags_v11010  
+      0.0           635519        180     3530.7     2284.0      1151     32554       4572.5  cudaEventCreateWithFlags         
+      0.0           185880        224      829.8      785.0       304      9437        649.4  cudaStreamIsCapturing_v10000     
+      0.0           184688        180     1026.0      884.0       380      3123        637.8  cudaEventQuery                   
+      0.0             1265          1     1265.0     1265.0      1265      1265          0.0  cuModuleGetLoadingMode           
+
+Processing [labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/cuda_gpu_kern_sum.py]... 
+
+ ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  --------  --------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+     39.1       1058847189     176000    6016.2    2992.5      1376     24161       6472.1  void at::native::elementwise_kernel<(int)128, (int)2, void at::native::gpu_kernel_impl_nocast<at::n…
+     35.1        950738064      99000    9603.4    1376.0      1024     66722      19340.1  void at::native::vectorized_elementwise_kernel<(int)4, void at::native::<unnamed>::pow_tensor_scala…
+     16.8        455614569      99000    4602.2    3873.0      1824     11200       2544.9  void at::native::reduce_kernel<(int)512, (int)1, at::native::ReduceOp<float, at::native::MeanOps<fl…
+      4.0        108494866      99000    1095.9    1120.0       960      1185         49.7  void at::native::vectorized_elementwise_kernel<(int)4, at::native::rsqrt_kernel_cuda(at::TensorIter…
+      4.0        106897038      99000    1079.8    1024.0       928      1952        147.8  void at::native::vectorized_elementwise_kernel<(int)4, at::native::CUDAFunctorOnSelf_add<float>, st…
+      0.9         24590266      22000    1117.7    1120.0      1088      1153         13.2  void at::native::vectorized_elementwise_kernel<(int)4, at::native::BinaryFunctor<float, float, floa…
+      0.0            70466         18    3914.8    1552.0      1312     24864       5737.2  void at::native::<unnamed>::distribution_elementwise_grid_stride_kernel<float, (int)4, void at::nat…
+
+Processing [labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/cuda_gpu_mem_time_sum.py]... 
+SKIPPED: labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite does not contain GPU memory data.
+
+Processing [labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/cuda_gpu_mem_size_sum.py]... 
+SKIPPED: labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite does not contain GPU memory data.
+
+Processing [labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/openmp_sum.py]... 
+SKIPPED: labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite does not contain OpenMP event data.
+
+Processing [labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/opengl_khr_range_sum.py]... 
+SKIPPED: labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite does not contain KHR Extension (KHR_DEBUG) data.
+
+Processing [labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/opengl_khr_gpu_range_sum.py]... 
+SKIPPED: labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite does not contain GPU KHR Extension (KHR_DEBUG) data.
+
+Processing [labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/vulkan_marker_sum.py]... 
+SKIPPED: labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite does not contain Vulkan Debug Extension (Vulkan Debug Util) data.
+
+Processing [labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/vulkan_gpu_marker_sum.py]... 
+SKIPPED: labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite does not contain GPU Vulkan Debug Extension (GPU Vulkan Debug markers) data.
+
+Processing [labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/dx11_pix_sum.py]... 
+SKIPPED: labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite does not contain DX11 CPU debug markers.
+
+Processing [labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/dx12_gpu_marker_sum.py]... 
+SKIPPED: labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite does not contain DX12 GPU debug markers.
+
+Processing [labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/dx12_pix_sum.py]... 
+SKIPPED: labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite does not contain DX12 CPU debug markers.
+
+Processing [labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/wddm_queue_sum.py]... 
+SKIPPED: labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite does not contain WDDM context data.
+
+Processing [labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/um_sum.py]... 
+SKIPPED: labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite does not contain CUDA memory transfers data.
+
+Processing [labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/um_total_sum.py]... 
+SKIPPED: labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite does not contain CUDA memory transfers data.
+
+Processing [labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/um_cpu_page_faults_sum.py]... 
+SKIPPED: labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite does not contain CUDA Unified Memory CPU page faults data.
+
+Processing [labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/openacc_sum.py]... 
+SKIPPED: labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite does not contain OpenACC event data.
+
+Processing [labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/syscall_sum.py]... 
+SKIPPED: labs/000-cuda-rmsnorm/profiles/nsys/torch_baseline.sqlite does not contain syscall data.
+

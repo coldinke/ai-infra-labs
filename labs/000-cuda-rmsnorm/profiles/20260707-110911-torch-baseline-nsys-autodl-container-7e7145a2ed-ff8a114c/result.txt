@@ -1,0 +1,26 @@
+== Environment ==
+torch: 2.8.0+cu128
+cuda: 12.8
+device: NVIDIA GeForce RTX 4090
+
+== Profile Mode ==
+batch_size: 32
+hidden_size: 8192
+dtype: torch.float32
+warmup: 5
+iters: 10
+
+done
+Collecting data...
+Generating '/tmp/nsys-report-5e64.qdstrm'
+
+[1/1] [0%                          ] profile.nsys-rep
+[1/1] [0%                          ] profile.nsys-rep
+[1/1] [6%                          ] profile.nsys-rep
+[1/1] [11%                         ] profile.nsys-rep
+[1/1] [============55%             ] profile.nsys-rep
+[1/1] [============56%             ] profile.nsys-rep
+[1/1] [========================100%] profile.nsys-rep
+[1/1] [========================100%] profile.nsys-rep
+Generated:
+    /root/ai-infra-labs/labs/000-cuda-rmsnorm/profiles/20260707-110911-torch-baseline-nsys-autodl-container-7e7145a2ed-ff8a114c/profile.nsys-rep
