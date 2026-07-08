@@ -1,0 +1,73 @@
+Generating SQLite file /root/ai-infra-labs/labs/000-cuda-rmsnorm/profiles/20260707-110911-torch-baseline-nsys-autodl-container-7e7145a2ed-ff8a114c/profile.sqlite from /root/ai-infra-labs/labs/000-cuda-rmsnorm/profiles/20260707-110911-torch-baseline-nsys-autodl-container-7e7145a2ed-ff8a114c/profile.nsys-rep
+Processing [/root/ai-infra-labs/labs/000-cuda-rmsnorm/profiles/20260707-110911-torch-baseline-nsys-autodl-container-7e7145a2ed-ff8a114c/profile.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/cuda_api_sum.py]... 
+
+ ** CUDA API Summary (cuda_api_sum):
+
+ Time (%)  Total Time (ns)  Num Calls  Avg (ns)   Med (ns)   Min (ns)  Max (ns)  StdDev (ns)                Name               
+ --------  ---------------  ---------  ---------  ---------  --------  --------  -----------  ---------------------------------
+     98.1        123792776         92  1345573.7     4780.5      4190  50393125    6432109.4  cudaLaunchKernel                 
+      1.6          2065197          1  2065197.0  2065197.0   2065197   2065197          0.0  cudaGetDeviceProperties_v2_v12000
+      0.3           332148          2   166074.0   166074.0    142421    189727      33450.4  cudaMalloc                       
+      0.0            13606          2     6803.0     6803.0      4092      9514       3833.9  cudaDeviceSynchronize            
+      0.0             8549          6     1424.8      872.0       412      4586       1596.4  cudaStreamIsCapturing_v10000     
+      0.0             1373          1     1373.0     1373.0      1373      1373          0.0  cuModuleGetLoadingMode           
+
+Processing [/root/ai-infra-labs/labs/000-cuda-rmsnorm/profiles/20260707-110911-torch-baseline-nsys-autodl-container-7e7145a2ed-ff8a114c/profile.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/cuda_gpu_kern_sum.py]... 
+
+ ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  --------  --------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+     38.3            62210         30    2073.7    2080.0      2016      2112         31.9  void at::native::elementwise_kernel<(int)128, (int)2, void at::native::gpu_kernel_impl_nocast<at::n…
+     25.1            40704         15    2713.6    2656.0      2624      3136        154.0  void at::native::reduce_kernel<(int)512, (int)1, at::native::ReduceOp<float, at::native::MeanOps<fl…
+     13.0            21153         15    1410.2    1376.0      1376      1728         89.2  void at::native::vectorized_elementwise_kernel<(int)4, void at::native::<unnamed>::pow_tensor_scala…
+     10.5            17120         15    1141.3    1152.0      1120      1184         23.2  void at::native::vectorized_elementwise_kernel<(int)4, at::native::rsqrt_kernel_cuda(at::TensorIter…
+      9.8            15872         15    1058.1    1056.0      1056      1088          8.3  void at::native::vectorized_elementwise_kernel<(int)4, at::native::CUDAFunctorOnSelf_add<float>, st…
+      3.3             5344          2    2672.0    2672.0      1664      3680       1425.5  void at::native::<unnamed>::distribution_elementwise_grid_stride_kernel<float, (int)4, void at::nat…
+
+Processing [/root/ai-infra-labs/labs/000-cuda-rmsnorm/profiles/20260707-110911-torch-baseline-nsys-autodl-container-7e7145a2ed-ff8a114c/profile.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/nvtx_sum.py]... 
+
+ ** NVTX Range Summary (nvtx_sum):
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)   Style                           Range                         
+ --------  ---------------  ---------  --------  --------  --------  --------  -----------  -------  ------------------------------------------------------
+    100.0           849720          1  849720.0  849720.0    849720    849720          0.0  PushPop  :rmsnorm_torch_profile:B=32,H=8192,dtype=fp32,iters=10
+
+Processing [/root/ai-infra-labs/labs/000-cuda-rmsnorm/profiles/20260707-110911-torch-baseline-nsys-autodl-container-7e7145a2ed-ff8a114c/profile.sqlite] with [/opt/nvidia/nsight-compute/2025.1.1/host/target-linux-x64/reports/osrt_sum.py]... 
+
+ ** OS Runtime Summary (osrt_sum):
+
+ Time (%)  Total Time (ns)  Num Calls   Avg (ns)     Med (ns)    Min (ns)   Max (ns)   StdDev (ns)           Name         
+ --------  ---------------  ---------  -----------  -----------  ---------  ---------  -----------  ----------------------
+     56.2        976672735         18   54259596.4   11092912.0       3452  374493459   89652997.9  poll                  
+     28.8        500059323          1  500059323.0  500059323.0  500059323  500059323          0.0  pthread_cond_timedwait
+      8.6        148716556        638     233098.1      12456.0       1034   43318453    1786802.4  ioctl                 
+      4.3         75446260        109     692167.5       1932.0       1602   20068690    3544531.5  fopen                 
+      0.6         11008755       1094      10062.8       2946.5       1000     279624      22147.7  read                  
+      0.5          7877941        129      61069.3      61803.0      38592      64635       2824.5  sleep                 
+      0.3          5282711       1179       4480.7       4141.0       1247      76277       3123.9  open64                
+      0.3          5057681          1    5057681.0    5057681.0    5057681    5057681          0.0  nanosleep             
+      0.2          3243392        197      16463.9      11066.0       1062      90239      15184.7  fgets                 
+      0.2          2644306        136      19443.4       3542.5       1024    1652614     142338.1  mmap64                
+      0.1          1199750        629       1907.4       1522.0       1121      13430       1430.3  munmap                
+      0.0           504258         10      50425.8      47686.5      41600      89076      13883.4  sem_timedwait         
+      0.0           288738          3      96246.0      85292.0      59137     144309      43629.8  pthread_create        
+      0.0           187562         16      11722.6       7845.0       1754      79023      18431.9  mmap                  
+      0.0           184508          1     184508.0     184508.0     184508     184508          0.0  pthread_cond_wait     
+      0.0            78859         28       2816.4       1551.0       1015      11489       2534.2  fclose                
+      0.0            45540         13       3503.1       3261.0       2044       7174       1499.8  write                 
+      0.0            42073          9       4674.8       5359.0       1615       8397       2415.0  open                  
+      0.0            34554          7       4936.3       2437.0       1829      14015       4644.0  fopen64               
+      0.0            21809          3       7269.7       6768.0       5440       9601       2125.4  pthread_cond_broadcast
+      0.0            20364          3       6788.0       5080.0       4904      10380       3112.0  pipe2                 
+      0.0            19155          3       6385.0       6262.0       4782       8111       1667.9  pthread_cond_signal   
+      0.0            15764          2       7882.0       7882.0       6641       9123       1755.0  socket                
+      0.0            10361          2       5180.5       5180.5       4762       5599        591.8  fread                 
+      0.0            10160          2       5080.0       5080.0       4577       5583        711.3  fwrite                
+      0.0             8931          2       4465.5       4465.5       1840       7091       3713.0  fcntl                 
+      0.0             8748          1       8748.0       8748.0       8748       8748          0.0  connect               
+      0.0             3518          1       3518.0       3518.0       3518       3518          0.0  bind                  
+      0.0             3403          2       1701.5       1701.5       1620       1783        115.3  sigaction             
+      0.0             2926          2       1463.0       1463.0       1015       1911        633.6  fflush                
+      0.0             1423          1       1423.0       1423.0       1423       1423          0.0  listen                
+

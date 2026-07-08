@@ -5,16 +5,11 @@ from pathlib import Path
 
 import torch
 
+
 LAB_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(LAB_DIR))
 
 import _rmsnorm_cuda  # noqa: E402
-
-
-def check_kernel_config() -> None:
-    block_size = int(_rmsnorm_cuda.block_size())
-    assert block_size > 0
-    print(f"PASS block_size={block_size}")
 
 
 def rmsnorm_torch(x: torch.Tensor, weight: torch.Tensor, eps: float = 1e-6) -> torch.Tensor:
@@ -34,13 +29,13 @@ def check_shape(batch_size: int, hidden_size: int) -> None:
     weight = torch.randn(hidden_size, device=device, dtype=dtype)
 
     expected = rmsnorm_torch(x, weight, eps)
-    actual = _rmsnorm_cuda.forward(x.contiguous(), weight.contiguous(), eps)
+    actual = _rmsnorm_cuda.forward_vectorized(x.contiguous(), weight.contiguous(), eps)
 
     torch.testing.assert_close(actual, expected, rtol=1e-4, atol=1e-5)
 
     max_abs_diff = (actual - expected).abs().max().item()
     print(
-        f"PASS batch_size={batch_size:<4} "
+        f"PASS vectorized batch_size={batch_size:<4} "
         f"hidden_size={hidden_size:<6} "
         f"max_abs_diff={max_abs_diff:.6e}"
     )
@@ -57,9 +52,10 @@ def main() -> None:
         (32, 4096),
         (32, 8192),
         (128, 8192),
+        (256, 8192),
+        (512, 8192),
+        (1024, 8192),
     ]
-
-    check_kernel_config()
 
     for batch_size, hidden_size in shapes:
         check_shape(batch_size, hidden_size)

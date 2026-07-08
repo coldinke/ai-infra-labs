@@ -27,3 +27,13 @@ A collection of labs for learning CUDA, LLM inference, PyTorch extensions, Trito
 3. Profile before guessing
 4. Record every result
 5. Prefer small complete labs over large unfinished projects
+
+## Shared Workflows
+
+- [Remote GPU workflow](docs/remote-gpu-workflow.md)
+- [Profiling workflow](docs/profiling.md)
+- [Environment troubleshooting](docs/env-troubleshooting.md)
+
+Lab directories should keep algorithm code, benchmarks, tests, and curated
+notes. Remote sync, CUDA/Nsight discovery, profiler execution, and artifact
+policy live in `scripts/` and `docs/` so later labs can reuse them.
