@@ -3,67 +3,52 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+import pytest
 import torch
 
-LAB_DIR = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(LAB_DIR))
 
-import _rmsnorm_cuda  # noqa: E402
+TEST_DIR = Path(__file__).resolve().parent
+LAB_DIR = TEST_DIR.parent
+ROOT = LAB_DIR.parents[1]
 
+for path in (ROOT, LAB_DIR):
+    path_text = str(path)
+    if path_text not in sys.path:
+        sys.path.insert(0, path_text)
 
-def check_kernel_config() -> None:
-    block_size = int(_rmsnorm_cuda.block_size())
-    assert block_size > 0
-    print(f"PASS block_size={block_size}")
-
-
-def rmsnorm_torch(x: torch.Tensor, weight: torch.Tensor, eps: float = 1e-6) -> torch.Tensor:
-    variance = x.pow(2).mean(dim=-1, keepdim=True)
-    x_norm = x * torch.rsqrt(variance + eps)
-    return x_norm * weight
+import rmsnorm_lab as lab  # noqa: E402
 
 
-def check_shape(batch_size: int, hidden_size: int) -> None:
-    torch.manual_seed(0)
+pytestmark = pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA is not available")
 
-    device = "cuda"
-    dtype = torch.float32
-    eps = 1e-6
 
-    x = torch.randn(batch_size, hidden_size, device=device, dtype=dtype)
-    weight = torch.randn(hidden_size, device=device, dtype=dtype)
+def test_kernel_config() -> None:
+    if not lab.cuda_extension_available():
+        pytest.skip("RMSNorm CUDA extension is not built")
 
-    expected = rmsnorm_torch(x, weight, eps)
-    actual = _rmsnorm_cuda.forward(x.contiguous(), weight.contiguous(), eps)
+    assert lab.block_size() > 0
 
-    torch.testing.assert_close(actual, expected, rtol=1e-4, atol=1e-5)
 
-    max_abs_diff = (actual - expected).abs().max().item()
-    print(
-        f"PASS batch_size={batch_size:<4} "
-        f"hidden_size={hidden_size:<6} "
-        f"max_abs_diff={max_abs_diff:.6e}"
+@pytest.mark.parametrize("variant_name", lab.CUDA_EXTENSION_VARIANTS)
+@pytest.mark.parametrize("batch_size,hidden_size", lab.SHAPES)
+def test_rmsnorm_matches_torch(
+    variant_name: str,
+    batch_size: int,
+    hidden_size: int,
+) -> None:
+    if not lab.cuda_extension_available():
+        pytest.skip("RMSNorm CUDA extension is not built")
+
+    variant = lab.VARIANTS[variant_name]
+    x, weight = lab.make_inputs(
+        batch_size,
+        hidden_size,
+        dtype=torch.float32,
+        seed=0,
     )
 
-
-def main() -> None:
-    if not torch.cuda.is_available():
-        raise RuntimeError("CUDA is not available")
-
-    shapes = [
-        (1, 1024),
-        (1, 4096),
-        (8, 4096),
-        (32, 4096),
-        (32, 8192),
-        (128, 8192),
-    ]
-
-    check_kernel_config()
-
-    for batch_size, hidden_size in shapes:
-        check_shape(batch_size, hidden_size)
+    lab.assert_close_to_reference(variant, x, weight, eps=1e-6)
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(pytest.main([str(Path(__file__).resolve())]))

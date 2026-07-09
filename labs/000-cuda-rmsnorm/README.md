@@ -39,14 +39,14 @@ Build and test on a GPU machine:
 ```bash
 cd labs/000-cuda-rmsnorm
 python3 setup.py build_ext --inplace
-python3 tests/test_rmsnorm.py
+python3 -m pytest tests
 ```
 
 Run through the shared lab runner:
 
 ```bash
-bash scripts/run_lab.sh --lab 000-cuda-rmsnorm --type torch-baseline -- --mode benchmark
-bash scripts/run_lab.sh --lab 000-cuda-rmsnorm --type cuda-baseline -- --mode benchmark
+bash scripts/run_lab.sh --lab 000-cuda-rmsnorm --type rmsnorm -- --mode benchmark --variant all
+bash scripts/run_lab.sh --lab 000-cuda-rmsnorm --type rmsnorm --nsys -- --mode profile --variant scalar --batch-size 32 --hidden-size 8192 --warmup 5 --iters 10
 ```
 
 With a configured remote GPU machine:
