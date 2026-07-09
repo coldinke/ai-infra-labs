@@ -15,7 +15,7 @@ A collection of labs for learning CUDA, LLM inference, PyTorch extensions, Trito
 | ID | Lab | Status | Focus |
 |---|---|---|---|
 | 000 | CUDA RMSNorm | In Progress | CUDA baseline, benchmark, profiler |
-| 001 | CUDA Softmax | Planned | Reduction, numerical stability |
+| 001 | CUDA Softmax | In Progress | PyTorch baseline, benchmark scaffold |
 | 002 | CUDA RoPE | Planned | LLM position embedding |
 | 003 | PyTorch Extension | Planned | C++/CUDA operator integration |
 | 004 | vLLM Profiling | Planned | Serving benchmark and analysis |
@@ -37,3 +37,7 @@ A collection of labs for learning CUDA, LLM inference, PyTorch extensions, Trito
 Lab directories should keep algorithm code, benchmarks, tests, and curated
 notes. Remote sync, CUDA/Nsight discovery, profiler execution, and artifact
 policy live in `scripts/` and `docs/` so later labs can reuse them.
+
+Small Python helpers in `labkit/` provide reusable benchmark and CUDA/NVTX
+plumbing. Each lab should keep operation-specific shapes, variants, reference
+implementations, and input factories in its own lab module.
