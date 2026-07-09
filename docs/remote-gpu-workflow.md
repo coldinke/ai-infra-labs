@@ -54,8 +54,9 @@ the raw profiler database.
 Generic remote execution:
 
 ```bash
-just remote-run 000-cuda-rmsnorm cuda-baseline --mode benchmark
-just remote-profile-nsys 000-cuda-rmsnorm cuda-baseline --mode profile --batch-size 32 --hidden-size 8192 --warmup 5 --iters 10
+just remote-test 000-cuda-rmsnorm
+just remote-bench 000-cuda-rmsnorm rmsnorm --variant all
+just remote-profile 000-cuda-rmsnorm rmsnorm --variant scalar --batch-size 32 --hidden-size 8192 --warmup 5 --iters 10
 ```
 
 Current RMSNorm shortcuts:

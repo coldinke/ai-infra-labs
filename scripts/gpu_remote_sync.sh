@@ -43,7 +43,7 @@ Examples:
   bash scripts/gpu_remote_sync.sh push root@1.2.3.4 --port 2222 --ask-pass
 
   bash scripts/gpu_remote_sync.sh exec --host root@1.2.3.4 -- \
-    bash scripts/run_lab.sh --lab 000-cuda-rmsnorm --type cuda-baseline -- --mode benchmark
+    bash scripts/run_lab.sh --lab 000-cuda-rmsnorm --type rmsnorm -- --mode benchmark --variant all
 
   bash scripts/gpu_remote_sync.sh pull --host root@1.2.3.4
   bash scripts/gpu_remote_sync.sh pull --host root@1.2.3.4 --lab 000-cuda-rmsnorm
@@ -314,7 +314,10 @@ exec_remote() {
     quoted_cmd+=("$(remote_quote "$arg")")
   done
 
-  run_ssh "cd $quoted_dir && ${quoted_cmd[*]}"
+  local command_text
+  command_text="${quoted_cmd[*]}"
+
+  run_ssh "cd $quoted_dir && bash -lc $(remote_quote "$command_text")"
 }
 
 check_remote() {

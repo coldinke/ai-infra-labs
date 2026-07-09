@@ -7,20 +7,23 @@ Usage:
   bash scripts/run_lab.sh --lab <lab_dir_or_id> --type <experiment_type> [--nsys] -- [benchmark_args...]
 
 Examples:
-  bash scripts/run_lab.sh --lab 000-cuda-rmsnorm --type torch-baseline -- --mode benchmark
+  bash scripts/run_lab.sh --lab 000-cuda-rmsnorm --type rmsnorm -- --mode benchmark --variant all
 
   bash scripts/run_lab.sh \
     --lab 000-cuda-rmsnorm \
-    --type torch-baseline \
+    --type rmsnorm \
     --nsys \
     -- \
     --mode profile \
+    --variant scalar \
     --batch-size 32 \
     --hidden-size 8192 \
     --warmup 5 \
     --iters 10
 
 Mapping:
+  --type softmax        -> benchmarks/softmax.py
+  --type rmsnorm        -> benchmarks/rmsnorm.py
   --type torch-baseline -> benchmarks/torch_baseline.py
   --type cuda-baseline  -> benchmarks/cuda_baseline.py
   --type optimized      -> benchmarks/optimized.py
@@ -91,6 +94,8 @@ if [[ ! -f "$BENCH_FILE" ]]; then
   echo "benchmark file not found: $BENCH_FILE"
   echo
   echo "Expected mapping:"
+  echo "  --type softmax        -> benchmarks/softmax.py"
+  echo "  --type rmsnorm        -> benchmarks/rmsnorm.py"
   echo "  --type torch-baseline -> benchmarks/torch_baseline.py"
   echo "  --type cuda-baseline  -> benchmarks/cuda_baseline.py"
   echo "  --type optimized      -> benchmarks/optimized.py"

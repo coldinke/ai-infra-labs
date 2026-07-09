@@ -12,9 +12,21 @@ default:
 run lab exp_type *args:
     bash scripts/run_lab.sh --lab "{{lab}}" --type "{{exp_type}}" -- {{args}}
 
+# Run one lab's pytest suite locally.
+test lab *args:
+    python3 -m pytest "labs/{{lab}}/tests" {{args}}
+
+# Run one lab benchmark locally with the conventional benchmark mode.
+bench lab exp_type *args:
+    @just run "{{lab}}" "{{exp_type}}" --mode benchmark {{args}}
+
 # Run a local Nsight Systems profile through the shared lab runner.
 profile-nsys lab exp_type *args:
     bash scripts/run_lab.sh --lab "{{lab}}" --type "{{exp_type}}" --nsys -- {{args}}
+
+# Run one lab Nsight Systems profile locally with the conventional profile mode.
+profile lab exp_type *args:
+    @just profile-nsys "{{lab}}" "{{exp_type}}" --mode profile {{args}}
 
 # Sync local code using GPU_HOST.
 push:
@@ -69,11 +81,25 @@ remote-run lab exp_type *args:
     bash scripts/gpu_remote_sync.sh exec "$GPU_HOST" --port "{{port}}" --remote-dir "{{remote_dir}}" -- \
       bash scripts/run_lab.sh --lab "{{lab}}" --type "{{exp_type}}" -- {{args}}
 
+# Run one lab's pytest suite on the remote GPU machine.
+remote-test lab *args:
+    @test -n "${GPU_HOST:-}" || (echo "Set GPU_HOST=user@host before using just remote-test" >&2; exit 1)
+    bash scripts/gpu_remote_sync.sh exec "$GPU_HOST" --port "{{port}}" --remote-dir "{{remote_dir}}" -- \
+      python3 -m pytest "labs/{{lab}}/tests" {{args}}
+
+# Run one lab benchmark on the remote GPU machine with the conventional benchmark mode.
+remote-bench lab exp_type *args:
+    @just remote-run "{{lab}}" "{{exp_type}}" --mode benchmark {{args}}
+
 # Run a lab Nsight Systems profile on the remote GPU machine.
 remote-profile-nsys lab exp_type *args:
     @test -n "${GPU_HOST:-}" || (echo "Set GPU_HOST=user@host before using just remote-profile-nsys" >&2; exit 1)
     bash scripts/gpu_remote_sync.sh exec "$GPU_HOST" --port "{{port}}" --remote-dir "{{remote_dir}}" -- \
       bash scripts/run_lab.sh --lab "{{lab}}" --type "{{exp_type}}" --nsys -- {{args}}
+
+# Run one lab Nsight Systems profile on the remote GPU machine with the conventional profile mode.
+remote-profile lab exp_type *args:
+    @just remote-profile-nsys "{{lab}}" "{{exp_type}}" --mode profile {{args}}
 
 # Build the current RMSNorm CUDA extension on the remote GPU machine.
 rmsnorm-build:
@@ -82,15 +108,32 @@ rmsnorm-build:
       bash -lc 'cd labs/000-cuda-rmsnorm && python3 setup.py build_ext --inplace'
 
 # Run the current RMSNorm CUDA smoke test on the remote GPU machine.
-rmsnorm-test:
+rmsnorm-test *args:
     @test -n "${GPU_HOST:-}" || (echo "Set GPU_HOST=user@host before using just rmsnorm-test" >&2; exit 1)
-    bash scripts/gpu_remote_sync.sh exec "$GPU_HOST" --port "{{port}}" --remote-dir "{{remote_dir}}" -- \
-      python3 labs/000-cuda-rmsnorm/tests/test_rmsnorm.py
+    @just remote-test 000-cuda-rmsnorm {{args}}
 
 # Run the current RMSNorm CUDA baseline benchmark on the remote GPU machine.
 rmsnorm-bench:
-    @just remote-run 000-cuda-rmsnorm cuda-baseline --mode benchmark
+    @just remote-bench 000-cuda-rmsnorm rmsnorm --variant all
 
 # Run the current RMSNorm CUDA baseline Nsight Systems profile.
-rmsnorm-profile:
-    @just remote-profile-nsys 000-cuda-rmsnorm cuda-baseline --mode profile --batch-size 32 --hidden-size 8192 --warmup 5 --iters 10
+rmsnorm-profile *args:
+    @just remote-profile 000-cuda-rmsnorm rmsnorm --variant scalar --batch-size 32 --hidden-size 8192 --warmup 5 --iters 10 {{args}}
+
+# Build the current Softmax CUDA extension on the remote GPU machine.
+softmax-build:
+    @test -n "${GPU_HOST:-}" || (echo "Set GPU_HOST=user@host before using just softmax-build" >&2; exit 1)
+    bash scripts/gpu_remote_sync.sh exec "$GPU_HOST" --port "{{port}}" --remote-dir "{{remote_dir}}" -- \
+      bash -lc 'cd labs/001-cuda-softmax && python3 setup.py build_ext --inplace'
+
+# Run the current Softmax pytest suite on the remote GPU machine.
+softmax-test *args:
+    @just remote-test 001-cuda-softmax {{args}}
+
+# Run the current Softmax benchmark on the remote GPU machine.
+softmax-bench:
+    @just remote-bench 001-cuda-softmax softmax --variant all
+
+# Run the current Softmax Nsight Systems profile.
+softmax-profile *args:
+    @just remote-profile 001-cuda-softmax softmax --variant cuda_naive --batch-size 32 --hidden-size 8192 --warmup 5 --iters 10 {{args}}

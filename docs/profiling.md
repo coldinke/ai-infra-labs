@@ -25,13 +25,13 @@ Use `nsys` first. Use `ncu` after the hot kernel is known.
 Local benchmark:
 
 ```bash
-bash scripts/run_lab.sh --lab 000-cuda-rmsnorm --type cuda-baseline -- --mode benchmark
+bash scripts/run_lab.sh --lab 000-cuda-rmsnorm --type rmsnorm -- --mode benchmark --variant all
 ```
 
 Local Nsight Systems profile:
 
 ```bash
-bash scripts/run_lab.sh --lab 000-cuda-rmsnorm --type cuda-baseline --nsys -- --mode profile --batch-size 32 --hidden-size 8192 --warmup 5 --iters 10
+bash scripts/run_lab.sh --lab 000-cuda-rmsnorm --type rmsnorm --nsys -- --mode profile --variant scalar --batch-size 32 --hidden-size 8192 --warmup 5 --iters 10
 ```
 
 The runner writes to:
@@ -73,8 +73,9 @@ ncu \
   --launch-skip 5 \
   --launch-count 1 \
   --set full \
-  python3 labs/000-cuda-rmsnorm/benchmarks/cuda_baseline.py \
+  python3 labs/000-cuda-rmsnorm/benchmarks/rmsnorm.py \
     --mode profile \
+    --variant scalar \
     --batch-size 1024 \
     --hidden-size 8192 \
     --warmup 5 \
